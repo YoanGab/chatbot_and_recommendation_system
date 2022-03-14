@@ -1,5 +1,6 @@
-import requests
+# 3rd party imports
 from bs4 import BeautifulSoup
+import requests
 
 
 def get_url(room_id: int) -> str:
