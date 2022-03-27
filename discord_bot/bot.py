@@ -1,52 +1,157 @@
 # 3rd party imports
+from typing import Optional
+
 import discord
 import pandas as pd
 from discord.ext.commands import Bot
 
 # Built-in imports
-from random import randint
 from datetime import datetime
+import asyncio
 
 # Local imports
 from data import df
 from services.nlp import Chatbot
-from services.scraping import get_url
+from services.recommendation.get_recommendation import recommend_room
+from services.scraping import get_url, get_id_from_url
+from services.utils import emoji_to_number, number_emojis
 
-bot = Bot(command_prefix='')
+bot: Bot = Bot(command_prefix='')
+
+users_profiles: dict = {}
+messages_sent: dict = {}
 
 
-def hello():
+def get_messages_for_help() -> str:
+    """ Get messages for help
+    :return: str
+    """
+    return "\n".join([
+        'Give me a room cheaper than 150€',
+        'My name is John',
+        'Hello'
+    ])
+
+
+def default_response(**kwargs) -> dict:
+    """ Default response
+    :param kwargs: dict
+    :return: dict
+    """
     return {
-        'title': 'Bonjour',
-        'description': 'Salut, comment ça va ?'
+        'title': 'Here are some messages than you can ask me',
+        'description': get_messages_for_help()
     }
 
 
-def room():
-    row: pd.Series = df.iloc[randint(0, df.shape[0] - 1)]
+def save_user_profile(user_id: int, data: dict) -> None:
+    """ Save user profile
+    :param user_id: int
+    :param data: dict
+    :return: None
+    """
+    if user_id not in users_profiles:
+        users_profiles[user_id] = data
+    for key, value in data.items():
+        if value is not None:
+            users_profiles[user_id][key] = value
+    if 'max_price' in data and data['min_price'] is None:
+        users_profiles[user_id]['min_price'] = None
+    if 'min_price' in data and data['max_price'] is None:
+        users_profiles[user_id]['max_price'] = None
+    if 'price' not in data and 'price' in users_profiles[user_id]:
+        del users_profiles[user_id]['price']
+
+
+def hello(user_id: int) -> dict:
+    """ Say Hello
+    :param user_id: int
+    :return: dict
+    """
+    name: str = ''
+    if user_id in users_profiles and 'name' in users_profiles[user_id]:
+        name = users_profiles[user_id]['name']
+
+    return {
+        'title': f'Hello {name}!',
+        'description': 'How are you?'
+    }
+
+
+def get_name(user_id: int, name: str = '') -> dict:
+    """ Store user name
+    :param user_id: int
+    :param name: str
+    :return: dict
+    """
+    name = name.title()
+    if name:
+        save_user_profile(user_id=user_id, data={'name': name})
+
+    return {
+        'title': f'Nice to meet you {name}!',
+        'description': 'I am a bot, I will help you find a room for your stay.'
+    }
+
+
+def room(user_id: int, min_price: int = None, max_price: int = None, price: int = None, neighbourhood: str = None,
+         room_type: str = None, minimum_nights: int = None, rating: int = None) -> dict:
+    """ Get room
+    :param user_id: int
+    :param min_price: int
+    :param max_price: int
+    :param price: int
+    :param neighbourhood: str
+    :param room_type: str
+    :param minimum_nights: int
+    :param rating: int
+    :return: dict
+    """
+    save_user_profile(
+        user_id=user_id,
+        data={
+            'min_price': int(min_price) if min_price else None,
+            'max_price': int(max_price) if max_price else None,
+            'price': int(price) if price else None,
+            'neighbourhood': neighbourhood.title() if neighbourhood else None,
+            'room_type': room_type.title() if room_type else None,
+            'minimum_nights': int(minimum_nights) if minimum_nights else None,
+            'rating': float(rating) if rating else None
+        }
+    )
+
+    room_id, respects_criteria = recommend_room(users_profiles[user_id])
+    room: pd.Series = df[df['id'] == room_id].iloc[0]
+
     image: str = ''
-    if row['images']:
-        image = row['images'].split(',')[0]
+    if room['images']:
+        image = room['images'].split(',')[0]
     return {
-        'title': f"Getting data from room {row['id']}",
-        'description': f"Title: {row['name']}\nRating: {row['rating']}",
-        'url': get_url(room_id=row["id"]),
-        'image': image
+        'title': f"Room {room['id']}: {room['name']}",
+        'description': f"Price: {room['price']}€\nRating: {room['rating']}\n{'**We did not find any room that meets all your criteria.**' if not respects_criteria else ''}",
+        'url': get_url(room_id=room['id']),
+        'image': image,
+        'fields': {'id': room['id']}
     }
 
 
-chatbot = Chatbot(
-    intents_path='intents.json',
-    default_response="Sorry, I don't understand.",
+chatbot: Chatbot = Chatbot(
+    default_response=default_response(),
     intent_methods={
         'greeting': hello,
-        'room': room
+        'room': room,
+        'name': get_name,
+        'help': default_response
     }
 )
 chatbot.train_model()
 
 
 def get_embed_from_dict(data: dict) -> discord.Embed:
+    """ Get embed from dict
+    :param data: dict
+    :return: discord.Embed
+    """
     embed: discord.Embed = discord.Embed(
         title=data['title'],
         description=data['description'] if 'description' in data else None,
@@ -54,19 +159,82 @@ def get_embed_from_dict(data: dict) -> discord.Embed:
     )
     if 'image' in data:
         embed.set_image(url=data['image'])
+    if 'fields' in data:
+        for key, value in data['fields'].items():
+            embed.add_field(name=key, value=value)
     return embed
 
 
-async def send_message(channel: discord.TextChannel, data: dict, with_reactions: bool = True):
-    embed: discord.Embed = get_embed_from_dict(data=data)
+async def react_with_emojis(message: discord.Message) -> None:
+    """ React with emojis
+    :param message: discord.Message
+    :return: None
+    """
+    await asyncio.gather(*[
+        message.add_reaction(emoji=emoji)
+        for emoji in number_emojis
+    ])
+
+
+async def send_message(channel: discord.TextChannel, message_dict: dict, with_reactions: bool = True) -> None:
+    """ Send message
+    :param channel: discord.TextChannel
+    :param message_dict: dict
+    :param with_reactions: bool
+    :return: None
+    """
+    embed: discord.Embed = get_embed_from_dict(data=message_dict)
     message_sent: discord.Message = await channel.send(embed=embed)
     if with_reactions:
-        await message_sent.add_reaction('👍')
-        await message_sent.add_reaction('👎')
+        await react_with_emojis(message=message_sent)
+
+
+async def reply(message: discord.Message, message_dict: dict, with_reactions: bool = True) -> None:
+    """ Reply
+    :param message: discord.Message
+    :param message_dict: dict
+    :param with_reactions: bool
+    :return: None
+    """
+    message_sent: discord.Message = await message.reply(embed=get_embed_from_dict(data=message_dict))
+    if with_reactions:
+        await react_with_emojis(message=message_sent)
+
+
+async def get_room_from_message(message_id: int, channel_id: int) -> Optional[int]:
+    """ Get room from message
+    :param message_id: int
+    :param channel_id: int
+    :return: int
+    """
+    channel: discord.TextChannel = bot.get_channel(channel_id)
+    message: discord.Message = await channel.fetch_message(message_id)
+    embed: discord.Embed = message.embeds[0]
+    return get_id_from_url(embed.url)
+
+
+async def save_rating(user_id: int, message_id: int, channel_id: int, rating_emoji: str) -> None:
+    """ Save rating
+    :param user_id: int
+    :param message_id: int
+    :param rating_emoji: str
+    :return: None
+    """
+    rating: int = emoji_to_number(emoji=rating_emoji)
+    room_id: int = await get_room_from_message(message_id=message_id, channel_id=channel_id)
+    if room_id:
+        if user_id not in users_profiles:
+            users_profiles[user_id] = {}
+        if 'ratings' not in users_profiles[user_id]:
+            users_profiles[user_id]['ratings'] = {}
+        users_profiles[user_id]['ratings'][room_id] = rating
 
 
 @bot.event
-async def on_ready():
+async def on_ready() -> None:
+    """ On ready
+    :return: None
+    """
     print(datetime.now())
     print('Logged in as')
     print(bot.user.name)
@@ -75,21 +243,31 @@ async def on_ready():
 
 
 @bot.event
-async def on_message(message):
+async def on_message(message: discord.Message) -> None:
+    """ On message
+    :param message: discord.Message
+    :return: None
+    """
     if message.author == bot.user:
         return
-    tag, data = chatbot.request(sentence=message.content)
-    with_reactions: bool = tag == 'room'
-    await send_message(channel=message.channel, data=data, with_reactions=with_reactions)
+    intent, message_dict = chatbot.request(user_id=message.author.id, message=message.content)
+    with_reactions: bool = intent == 'room'
+    await reply(message=message, message_dict=message_dict, with_reactions=with_reactions)
 
 
 @bot.event
-async def on_raw_reaction_add(payload):
+async def on_raw_reaction_add(payload: discord.RawReactionActionEvent) -> None:
+    """ On raw reaction add
+    :param payload: discord.RawReactionActionEvent
+    :return: None
+    """
     if payload.user_id == bot.user.id:
         return
-    if payload.emoji.name in ['👍', '👎']:
+    if payload.emoji.name in number_emojis:
+        await save_rating(user_id=payload.user_id, message_id=payload.message_id,
+                          channel_id=payload.channel_id, rating_emoji=payload.emoji.name)
         await send_message(
             channel=bot.get_channel(payload.channel_id),
-            data=room(),
+            message_dict=room(user_id=payload.user_id),
             with_reactions=True
-    )
+        )

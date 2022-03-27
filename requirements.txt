@@ -85,3 +85,6 @@ wheel==0.37.1
 widgetsnbextension==3.5.2
 yarl==1.7.2
 zipp==3.7.0
+
+nltk~=3.7
+tensorflow~=2.8.0

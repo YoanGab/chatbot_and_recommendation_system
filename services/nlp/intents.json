@@ -1,0 +1,163 @@
+{
+  "intents": [
+    {
+      "tag": "greeting",
+      "patterns": [
+        "hello",
+        "hi"
+      ],
+      "responses": [
+        "Hello, how can I help you?",
+        "Hi, how can I help you?",
+        "Hey, how can I help you?",
+        "Howdy, how can I help you?",
+        "Good morning, how can I help you?",
+        "Good afternoon, how can I help you?",
+        "Good evening, how can I help you?",
+        "Good day, how can I help you?",
+        "Good night, how can I help you?"
+      ],
+      "entities": {}
+    },
+
+    {
+      "tag": "goodbye",
+      "patterns": [
+        "bye",
+        "good bye"
+      ],
+      "responses": [
+        "Bye, have a good day!"
+      ],
+      "entities": {}
+    },
+
+    {
+      "tag": "thank_you",
+      "patterns": [
+        "thank you",
+        "thanks",
+        "thank you very much"
+      ],
+      "responses": [
+        "You're welcome!"
+      ],
+      "entities": {}
+    },
+
+    {
+      "tag": "room",
+      "patterns": [
+        "room",
+        "Give me a room",
+        "Find a room",
+        "Find a room for me",
+        "Search for a room",
+        "I need a room",
+        "I want a room",
+        "I want a room below 50€ in Manhattan",
+        "I want a hotel in Staten Island",
+        "I want a private room in New York with 5 stars"
+      ],
+      "responses": [],
+      "entities": {
+        "max_price": [
+          ".*cheaper([a-zA-Z\\s]*)(?P<max_price>[0-9]+).*",
+          ".*(price\\s*)?below\\s*(?P<max_price>[0-9]+).*",
+          ".*max\\s*price(\\s*is)?\\s*(?P<max_price>[0-9]+).*",
+          ".*budget\\s*(?P<max_price>[0-9]+).*",
+          ".*between\\s*(?P<min_price>[0-9]+)\\s*and\\s*(?P<max_price>[0-9]+).*"
+        ],
+        "min_price": [
+          ".*more\\s*(expensive)?([a-zA-Z\\s]*)(?P<min_price>[0-9]+).*",
+          ".*above\\s*(?P<min_price>[0-9]+).*",
+          ".*min\\s*price(\\s*is)?\\s*(?P<min_price>[0-9]+).*",
+          ".*between\\s*(?P<min_price>[0-9]+)\\s*and\\s*(?P<max_price>[0-9]+).*"
+        ],
+        "price": [
+          ".*price(\\s*is)?\\s*(?P<price>[0-9]+).*",
+          ".*room\\s*([a-zA-Z\\s]*)(?P<price>[0-9]+).*",
+          ".*\\s(?P<price>[0-9]+)€|$.*",
+          ".*for\\s*(?P<price>[0-9]+).*",
+          ".*around\\s*(?P<price>[0-9]+).*"
+        ],
+        "neighbourhood": [
+          ".*in\\s+(?P<neighbourhood>[a-zA-Z]*).*",
+          ".*next\\sto\\s*(?P<neighbourhood>[a-zA-Z]*).*",
+          ".*near\\s*(?P<neighbourhood>[a-zA-Z]*).*",
+          ".*close\\sto\\s*(?P<neighbourhood>[a-zA-Z]*).*",
+          ".*nearby\\s*(?P<neighbourhood>[a-zA-Z]*).*"
+        ],
+        "room_type": [
+          ".*(?P<room_type>home|appartment|hotel|private|shared).*"
+        ],
+        "minimum_nights": [
+          ".*\\s(?P<minimum_nights>[0-9]+)\\snight(s)?.*"
+        ],
+        "rating": [
+          ".*(?P<rating>[0-9]+)\\sstar(s)?.*",
+          ".*rating.*(?P<rating>[0-9]+).*"
+        ]
+      }
+    },
+
+    {
+      "tag": "name",
+      "patterns": [
+        "My name is Yoan",
+        "My name is Bastien",
+        "My name is Ali",
+        "Hello, My name is Yoan",
+        "Hello, My name is Bastien",
+        "Hello, My name is Ali",
+        "Hi, My name is Yoan",
+        "Hi, My name is Bastien",
+        "Hi, My name is Ali",
+        "You can call me Yoan",
+        "You can call me Bastien",
+        "You can call me Ali",
+        "I am Yoan",
+        "I am Bastien",
+        "I am Ali"
+      ],
+      "responses": [],
+      "entities": {
+        "name": [
+          ".*my name [is]? (?P<name>[a-zA-Z]*).*",
+          ".*I[ am]? (?P<name>[a-zA-Z]*).*",
+          ".*I'm (?P<name>[a-zA-Z]*).*",
+          ".*call[ me]? (?P<name>[a-zA-Z]*).*"
+        ]
+      }
+    },
+
+    {
+      "tag": "help",
+      "patterns": [
+        "help",
+        "what can you do ?",
+        "what can you do for me ?",
+        "I need help",
+        "I'm lost"
+      ],
+      "responses": [],
+      "entities": {}
+    },
+
+    {
+      "tag": "be_nice",
+      "patterns": [
+        "I'm great",
+        "I'm good",
+        "Good",
+        "Good and you ?"
+      ],
+      "responses": [
+        "Awesome !",
+        "That's great to hear",
+        "Glad to hear it"
+      ],
+      "entities": {}
+    }
+  ]
+}
