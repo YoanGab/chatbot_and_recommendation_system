@@ -158,6 +158,22 @@
         "Glad to hear it"
       ],
       "entities": {}
+    },
+
+    {
+      "tag": "saved_rooms",
+      "patterns": [
+        "Show me my saved rooms",
+        "Show me my favorite rooms",
+        "What are my saved rooms",
+        "What are my favorite rooms",
+        "Can I see my saved rooms",
+        "Can I see my favorite rooms",
+        "I want to see my saved rooms",
+        "I want to see my favorite rooms"
+      ],
+      "responses": [],
+      "entities": {}
     }
   ]
 }

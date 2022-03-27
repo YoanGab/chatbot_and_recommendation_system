@@ -1,13 +1,12 @@
 # 3rd party imports
+import asyncio
+# Built-in imports
+from datetime import datetime
 from typing import Optional
 
 import discord
 import pandas as pd
 from discord.ext.commands import Bot
-
-# Built-in imports
-from datetime import datetime
-import asyncio
 
 # Local imports
 from data import df
@@ -126,12 +125,40 @@ def room(user_id: int, min_price: int = None, max_price: int = None, price: int 
     image: str = ''
     if room['images']:
         image = room['images'].split(',')[0]
+    description = f"Price: {room['price']}€\nRating: {room['rating']}\n" \
+                  f"{'**We did not find any room that meets all your criteria.**' if not respects_criteria else ''}" \
+                  f"\nYour criteria:\n" \
+                  f"Neighbourhood: {users_profiles[user_id]['neighbourhood'] if users_profiles[user_id]['neighbourhood'] else ''}\n" \
+                  f"Room type: {users_profiles[user_id]['room_type'] if users_profiles[user_id]['room_type'] else ''}\n" \
+                  f"Minimum nights: {str(users_profiles[user_id]['minimum_nights']) if users_profiles[user_id]['minimum_nights'] else ''}\n" \
+                  f"Minimum price: {str(users_profiles[user_id]['min_price']) if users_profiles[user_id]['min_price'] else ''}\n" \
+                  f"Maximum price: {str(users_profiles[user_id]['max_price']) if users_profiles[user_id]['max_price'] else ''}\n" \
+                  f"Mean Price: {str(users_profiles[user_id]['price']) if users_profiles[user_id]['price'] else ''}\n" \
+                  f"Min Rating: {str(users_profiles[user_id]['rating']) if users_profiles[user_id]['rating'] else ''}"
+
     return {
         'title': f"Room {room['id']}: {room['name']}",
-        'description': f"Price: {room['price']}€\nRating: {room['rating']}\n{'**We did not find any room that meets all your criteria.**' if not respects_criteria else ''}",
+        'description': description,
         'url': get_url(room_id=room['id']),
         'image': image,
         'fields': {'id': room['id']}
+    }
+
+
+def saved_rooms(user_id: int) -> dict:
+    """ Get saved rooms
+    :param user_id: int
+    :return: dict
+    """
+    fields: dict = {}
+    if user_id in users_profiles and 'ratings' in users_profiles[user_id]:
+        for room_id, rating in users_profiles[user_id]['ratings'].items():
+            room: pd.Series = df[df['id'] == room_id].iloc[0]
+            fields[room['name']] = get_url(room_id=room_id)
+    return {
+        'title': 'Here are the rooms you saved',
+        'description': 'You can ask me to recommend a room for you',
+        'fields': fields
     }
 
 
@@ -141,7 +168,8 @@ chatbot: Chatbot = Chatbot(
         'greeting': hello,
         'room': room,
         'name': get_name,
-        'help': default_response
+        'help': default_response,
+        'saved_rooms': saved_rooms
     }
 )
 chatbot.train_model()
