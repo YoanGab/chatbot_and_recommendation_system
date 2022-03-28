@@ -5,7 +5,6 @@
 - Yoan GABISON
 - Bastien LEDUC
 
-
 ## Installation
 
 ```
@@ -25,7 +24,7 @@ DISCORD_TOKEN: The token of your Discord bot.
 
 
 ## Description
-Please describe the idea of the project and what is the goal.
+Our project idea was to create a chatbot that was able to recommend AirBnB rooms to a user. We used a recommendation system based on the user's preferences. The chatbot was able to answer questions about the rooms and the user was able to interact with the chatbot. 
 ## Bot Info
 - Chatbot platform: Facebook
 - [Chat with bot](https://m.me/...) (open on new tab)
@@ -35,11 +34,60 @@ Please describe the idea of the project and what is the goal.
 Please Describe the used api and give [link](https://link/) 
 
 ### Used Dataset
-If you used an existing dataset,  please give a reference to Kaggle or the website [link](https://link/) 
+We used the [Airbnb New York @ 4.DEC.2021](https://www.kaggle.com/datasets/sirapatsam/airbnb-new-york-4dec2021) dataset for building our recommendation system. The dataset contains information about the rooms available in New York City. Those features are the following:
+- id (unique id of the room)
+- name (name of the room)
+- host_id (id of the host)
+- host_name (name of the host)
+- neighbourhood_group (neighbourhood group) (ex: "Manhattan")
+- neighbourhood (neighbourhood located in the neighbourhood group) (ex: "Upper West Side")
+- latitude (latitude of the room)
+- longitude (longitude of the room)
+- room_type (type of the room) (ex: "Entire home/apt")
+- price (price of the room)
+- minimum_nights (minimum number of nights the room can be booked)
+- number_of_reviews (number of reviews the room has)
+- last_review (date of the last review)
+- reviews_per_month (number of reviews per month)
+- calculated_host_listings_count (number of listings the host has)
+- availability_365 (number of days the room is available in the year)
+- number_of_reviews_ltm (number of reviews the room has in the last month)
+- license (license of the host).
 
-Otherwise, please describe how you have created the dataset. 
+Then, we decided to clean the dataset by removing irrelevant features for our recommendation system, and rows with missing values. It resulted in a dataset with the following features:
+- id
+- neighbourhood_group
+- neighbourhood
+- room_type
+- price
+- minimum_nights
+- availability_365
+
+And we added two more features:
+- rating (the average rating of the room we got from the website)
+- image (the url of the image of the room used by our chatbot to display the room)
+
 ## Recommender System
-Please describe the recommender system in your chatbot. How it works and the details about it.
+We used a recommendation system based on the user's preferences. As we did not have a dataset of users and their ratings, we chose to use the Content Based Recommender System (CBRS). This recommender system is based on the similarity between items and the user's preferences. To do so, we needed first to create the room profiles (with the features selected above) and the user profile, which will have the same features as the room profiles. 
+
+### Numerical to categorical conversion
+To create our room profiles, we had to turn some numerical features into categorical features (price, minimum_nights, availability_365). We created a new feature for each of those features, which are ranges of their values (ex: "price_range" for price). In each "feature_range" column, we look at the original value and associate it to the correct range. For example, if the price of a room is between $100 and $200, we put it into the "100-200" category of "price_range" (same thing for minimum_nights, availability_365). 
+
+### One-hot encoding
+Once all the features were converted into categorical features, we had to create one-hot encoding for each of them. This is done by creating a new column for each category of the feature. For example, if a room belongs to the "Entire home/apt" category, we create a new column "entire_home_apt" with a value of 1. If the room belongs to the "Private room" category, we create a new column "private_room" with a value of 1. The same goes for the other categories.
+
+### Normalization
+When the features are encoded, we normalise them by multiplying each 1 value by the average rating of the room and divide it by 5, the maximum rating of the room. This is done to make the values of the features comparable.  
+
+### User profile
+The features of our user profile will be the same ones used for the rooms, until the one-hot encoding. To create our user profile, the chatbot will suggest rooms based on what the user asked, and the user will be able to rate the room between 0 and 5 stars. All the rooms rated by the user will be added to the user profile. Then, we proceed to the same normalization process, but we use this time the user rating insted of the average room rating. Finally, we create our user vector by calculing the mean of the user profile features.
+
+### Similarity
+Then, we use the cosine similarity to calculate the similarity between two items. In this case, we calculate the similarity between the user profile vector and the room profiles. We then sort the rooms by their similarity to the user profile, and we return the top 10 rooms.
+
+### Preference
+We used the user's preferences to recommend rooms. We got the user's preferences from the Discord chat. For example, the user can say "I want a room in Manhattan above 100€ with 4 stars" or "I want an appartment in Staten Island between 100 and 200 for 10 nights". We used the user's preferences to filter the rooms based on what the user asked and then recommend rooms that watch the the user's preferences.
+
 
 ## Language Processing
 Please describe the language processing step. Using external services, AI, regular expression, etc. or mix of them.
