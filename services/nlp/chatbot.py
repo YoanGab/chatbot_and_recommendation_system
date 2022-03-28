@@ -194,17 +194,17 @@ class Chatbot:
         try:
             tag: str = intents[0]['tag']
             list_of_intents: list[dict] = self.intents['intents']
-            for intent in list_of_intents:
-                if intent['tag'] == tag:
-                    response = {
-                        'title': random.choice(intent['responses']),
-                        'description': ''
-                    }
-                    break
-        except IndexError:
-            tag = 'no_intent'
-            response = self.default_response
-        return tag, response
+            for intent in list_of_intents:    
+                if intent['tag'] == tag:    
+                    response = {    
+                        'title': random.choice(intent['responses']),    
+                        'description': ''    
+                    }    
+                    break    
+        except IndexError:    
+            tag = 'no_intent'    
+            response = self.default_response    
+        return tag, response    
 
     @staticmethod
     def _get_entities(message: str, intent: dict) -> dict:

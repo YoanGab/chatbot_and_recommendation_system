@@ -27,7 +27,7 @@
         "good bye"
       ],
       "responses": [
-        "Bye, have a good day!"
+        "Bye, have a good day👋!"
       ],
       "entities": {}
     },
@@ -40,7 +40,7 @@
         "thank you very much"
       ],
       "responses": [
-        "You're welcome!"
+        "You're welcome😇!"
       ],
       "entities": {}
     },
@@ -154,9 +154,9 @@
         "Good and you ?"
       ],
       "responses": [
-        "Awesome !",
-        "That's great to hear",
-        "Glad to hear it"
+        "Awesome🤩!",
+        "That's great to hear😁",
+        "Glad to hear it😊"
       ],
       "entities": {}
     },

@@ -86,7 +86,7 @@ The features of our user profile will be the same ones used for the rooms, until
 Then, we use the cosine similarity to calculate the similarity between two items. In this case, we calculate the similarity between the user profile vector and the room profiles. We then sort the rooms by their similarity to the user profile, and we return the top 10 rooms.
 
 ### Preference
-We used the user's preferences to recommend rooms. We got the user's preferences from the Discord chat. For example, the user can say "I want a room in Manhattan above 100€ with 4 stars" or "I want an appartment in Staten Island between 100 and 200 for 10 nights". We used the user's preferences to filter the rooms based on what the user asked and then recommend rooms that match the the user's preferences.
+We used the user's preferences to recommend rooms. We got the user's preferences from the Discord chat. For example, the user can say "I want a room in Manhattan above 100€ with 4 stars" or "I want an appartment in Staten Island between 100 and 200€ for 10 nights". We used the user's preferences to filter the rooms based on what the user asked and then recommend rooms that match the the user's preferences.
 
 
 ## Language Processing
@@ -102,21 +102,30 @@ If you use other services like wit.ai, please include a video from the trained t
 
 
 ### Intents and Entities
-Please describe your chatbot intents and entities.
-Each intent should be in the new row:
-e.g.:
 
-| Intent         | Entities               |
-|----------------|------------------------|
-| get movie info | title, year (optional) |
-| get weather    | city, date (optional)  |
+| Intent         | Entities                              |
+|----------------|---------------------------------------|
+| greeting       |                   -                   |
+| goodbye        |                   -                   |
+| thank you      |                   -                   |
+| help           |                   -                   |
+|----------------|---------------------------------------|
+|                | max_price, min_price, price,          |
+| room           | neighbourhood, room_type,             |
+|                | minimum_nights, rating (all optional) |
+|----------------|---------------------------------------|
+| name           | name (optional)                       |
+| be_nice        |                   -                   |
+| saved_rooms    |                   -                   |
+|----------------|---------------------------------------|
+
 
 ## Scenarios
 Please describe all the possible scenarios in your chatbot.
 ### scenario 1:
 | User | Bot                                                     |
 |------|---------------------------------------------------------|
-| Hi   | Welcome to my chatbot😊                                  |
+| Hi   | Welcome to my chatbot😊                                |
 |      | You can use this chat bot using the following examples: |
 |      | Hi<br>How are you?<br>I want a pizza                    |
 

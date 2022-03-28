@@ -26,9 +26,15 @@ def get_messages_for_help() -> str:
     :return: str
     """
     return "\n".join([
-        'Give me a room cheaper than 150€',
-        'My name is John',
-        'Hello'
+        '- Give me a room cheaper than 150€.',
+        '- I want an appartment in Staten Island between 100 and 150€ with 3 stars.',
+        '- Find a hotel near Manhattan above 100€ with 3 stars for 10 nights.',
+        '- I need a private room with 5 stars close to Bronx.',
+        '- Search for a shared room in Brooklyn around 300€ for 30 nights with 4 stars.',
+        '- Show me my favourite rooms.'
+        '- Can I see me my saved rooms?',
+        '- I want to see my favourite rooms.',  
+        '- What are my saved rooms?'
     ])
 
 
@@ -38,7 +44,7 @@ def default_response(**kwargs) -> dict:
     :return: dict
     """
     return {
-        'title': 'Here are some messages than you can ask me',
+        'title': '💬Here are some messages than you can ask me: ',
         'description': get_messages_for_help()
     }
 
@@ -73,7 +79,7 @@ def hello(user_id: int) -> dict:
 
     return {
         'title': f'Hello {name}!',
-        'description': 'How are you?'
+        'description': 'How are you?😊'
     }
 
 
@@ -88,8 +94,8 @@ def get_name(user_id: int, name: str = '') -> dict:
         save_user_profile(user_id=user_id, data={'name': name})
 
     return {
-        'title': f'Nice to meet you {name}!',
-        'description': 'I am a bot, I will help you find a room for your stay.'
+        'title': f'Nice to meet you {name}😊!',
+        'description': 'I am your AirBnB bot 🛏🏡🗽 I will help you find a room for your stay🤗'
     }
 
 
@@ -158,8 +164,8 @@ def saved_rooms(user_id: int) -> dict:
             fields[f"{room['name']}"] = f"[Rating of {rating}]({get_url(room_id=room_id)})"
 
     return {
-        'title': 'Here are the rooms you saved',
-        'description': 'You can ask me to recommend a room for you',
+        'title': 'Here are the rooms you saved:',
+        'description': 'You can ask me to recommend a room for you.',
         'fields': fields
     }
 
