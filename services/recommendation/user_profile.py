@@ -27,11 +27,11 @@ def filterBy(room_profiles, price=None, min_price=None, max_price=None, rating=N
     """
     if min_price and max_price and min_price > max_price:
         min_price, max_price = max_price, min_price
-    if max_price:
+    if max_price is not None:
         room_profiles = room_profiles.loc[room_profiles.price <= max_price]
-    if min_price:
+    if min_price is not None:
         room_profiles = room_profiles.loc[room_profiles.price >= min_price]
-    if price and not min_price and not max_price:
+    if price is not None and min_price is None and max_price is None:
         room_profiles = room_profiles.loc[room_profiles.price <= price + 20]
         room_profiles = room_profiles.loc[room_profiles.price >= price - 20]
     if rating:

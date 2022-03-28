@@ -36,10 +36,6 @@ def proceed_room_recommendation(room_profiles_norm, user_vector: pd.Series, n: i
     :param n: the number of recommendable rooms to find
     :return: the n most recommendable rooms to the user with the given user_id
     """
-    # Check if user_vector is full on NaN
-    if user_vector.isnull().sum() == len(user_vector):
-        print('User vector is full of NaN')
-
     cols = df.columns[6:]
     similarity_scores = []
     for index, row in room_profiles_norm.iterrows():
@@ -57,23 +53,22 @@ def recommend_room(user: dict) -> tuple[int, bool]:
     :param user: the user profile
     :return: the n most recommendable rooms to the user with the given user_id
     """
-    print(user)
+    print(f"Criteria: {user}")
     df_copy = df.copy()
     user_profile = create_user_profile(df_copy, user.get('ratings', {}))
     respects_criteria: bool = True
-    try:
-        filtered_rooms = filterBy(
-            df_copy,
-            min_price=user.get("min_price"),
-            max_price=user.get("max_price"),
-            price=user.get("price"),
-            neighbourhood_group=user.get("neighbourhood"),
-            room_type=user.get("room_type"),
-            min_nights=user.get("minimum_nights"),
-            rating=4,
-            rooms_to_exclude=user.get('ratings', {}).keys()
-        )
-    except KeyError:
+    filtered_rooms = filterBy(
+        df_copy,
+        min_price=user.get("min_price"),
+        max_price=user.get("max_price"),
+        price=user.get("price"),
+        neighbourhood_group=user.get("neighbourhood"),
+        room_type=user.get("room_type"),
+        min_nights=user.get("minimum_nights"),
+        rating=user.get("rating"),
+        rooms_to_exclude=user.get('ratings', {}).keys()
+    )
+    if len(filtered_rooms) == 0:
         respects_criteria = False
         filtered_rooms = df_copy
 
