@@ -86,7 +86,3 @@ Please describe all the possible scenarios in your chatbot.
 please enter three examples per each scenario
 
 
-
-
-
-
