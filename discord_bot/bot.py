@@ -54,12 +54,12 @@ def save_user_profile(user_id: int, data: dict) -> None:
     for key, value in data.items():
         if value is not None:
             users_profiles[user_id][key] = value
-    if 'max_price' in data and data['min_price'] is None:
+    if data.get('max_price') and data['min_price'] is None:
         users_profiles[user_id]['min_price'] = None
-    if 'min_price' in data and data['max_price'] is None:
+    if data.get('min_price') and data['max_price'] is None:
         users_profiles[user_id]['max_price'] = None
-    if 'price' not in data and 'price' in users_profiles[user_id]:
-        del users_profiles[user_id]['price']
+    if 'price' not in data and users_profiles[user_id].get('price'):
+        users_profiles[user_id]['price'] = None
 
 
 def hello(user_id: int) -> dict:
@@ -125,15 +125,15 @@ def room(user_id: int, min_price: int = None, max_price: int = None, price: int 
     image: str = ''
     if room['images']:
         image = room['images'].split(',')[0]
-    description = f"Price: {room['price']}€\nRating: {room['rating']}\n" \
+    description = f"Price: {room['price']}€\nRating: {room['rating']}" \
                   f"{'**We did not find any room that meets all your criteria.**' if not respects_criteria else ''}" \
-                  f"\nYour criteria:\n" \
+                  f"\n\nYour criteria:\n" \
                   f"Neighbourhood: {users_profiles[user_id]['neighbourhood'] if users_profiles[user_id]['neighbourhood'] else ''}\n" \
                   f"Room type: {users_profiles[user_id]['room_type'] if users_profiles[user_id]['room_type'] else ''}\n" \
                   f"Minimum nights: {str(users_profiles[user_id]['minimum_nights']) if users_profiles[user_id]['minimum_nights'] else ''}\n" \
                   f"Minimum price: {str(users_profiles[user_id]['min_price']) if users_profiles[user_id]['min_price'] else ''}\n" \
                   f"Maximum price: {str(users_profiles[user_id]['max_price']) if users_profiles[user_id]['max_price'] else ''}\n" \
-                  f"Mean Price: {str(users_profiles[user_id]['price']) if users_profiles[user_id]['price'] else ''}\n" \
+                  f"Mean Price: {str(users_profiles[user_id]['price']) if users_profiles[user_id]['price'] and not users_profiles[user_id]['max_price'] and not users_profiles[user_id]['max_price'] else ''}\n" \
                   f"Min Rating: {str(users_profiles[user_id]['rating']) if users_profiles[user_id]['rating'] else ''}"
 
     return {
@@ -152,9 +152,11 @@ def saved_rooms(user_id: int) -> dict:
     """
     fields: dict = {}
     if user_id in users_profiles and 'ratings' in users_profiles[user_id]:
-        for room_id, rating in users_profiles[user_id]['ratings'].items():
+        sorted_ratings = {k: v for k, v in sorted(users_profiles[user_id]['ratings'].items(), key=lambda item: item[1], reverse=True)}
+        for room_id, rating in sorted_ratings.items():
             room: pd.Series = df[df['id'] == room_id].iloc[0]
-            fields[room['name']] = get_url(room_id=room_id)
+            fields[f"{room['name']}"] = f"[Rating of {rating}]({get_url(room_id=room_id)})"
+
     return {
         'title': 'Here are the rooms you saved',
         'description': 'You can ask me to recommend a room for you',
@@ -243,6 +245,7 @@ async def get_room_from_message(message_id: int, channel_id: int) -> Optional[in
 
 async def save_rating(user_id: int, message_id: int, channel_id: int, rating_emoji: str) -> None:
     """ Save rating
+    :param channel_id:
     :param user_id: int
     :param message_id: int
     :param rating_emoji: str

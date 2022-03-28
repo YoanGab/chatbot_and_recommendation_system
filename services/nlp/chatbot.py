@@ -30,8 +30,6 @@ class Chatbot:
     def __init__(self, intent_methods: dict = None, model_name: str = "assistant_model",
                  default_response=None, min_probability: float = 0.8) -> None:
         """ Initialize the Chatbot object.
-        :param intents: The intents dictionary.
-        :param intents_path: The path to the intents file.
         :param intent_methods: The methods to be used for the intents.
         :param model_name: The name of the model.
         :param default_response: The default response.
