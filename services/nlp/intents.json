@@ -66,7 +66,8 @@
           ".*(price\\s*)?below\\s*(?P<max_price>[0-9]+).*",
           ".*max\\s*price(\\s*is)?\\s*(?P<max_price>[0-9]+).*",
           ".*budget\\s*(of\\s*)?(?P<max_price>[0-9]+).*",
-          ".*between\\s*(?P<min_price>[0-9]+)\\s*and\\s*(?P<max_price>[0-9]+).*"
+          ".*between\\s*(?P<min_price>[0-9]+)\\s*and\\s*(?P<max_price>[0-9]+).*",
+          ".*under\\s*(?P<max_price>[0-9]+).*"
         ],
         "min_price": [
           ".*more\\s*(expensive)?([a-zA-Z\\s]*)(?P<min_price>[0-9]+).*",
