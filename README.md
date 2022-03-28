@@ -27,7 +27,7 @@ DISCORD_TOKEN: The token of your Discord bot.
 Our project idea was to create a chatbot that was able to recommend AirBnB rooms to a user. We used a recommendation system based on the user's preferences. The chatbot was able to answer questions about the rooms and the user was able to interact with the chatbot. 
 ## Bot Info
 - Chatbot platform: Facebook
-- [Chat with bot](https://m.me/...) (open on new tab)
+- [Chat with bot](https://discord.gg/ACDh263rr4) (open on new tab)
 - [Working video of this bot](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
 
 ### Used API
@@ -90,14 +90,22 @@ We used the user's preferences to recommend rooms. We got the user's preferences
 
 
 ## Language Processing
-Please describe the language processing step. Using external services, AI, regular expression, etc. or mix of them.
-If you have reg ex, please write them with an example:
+To recognize intents, we made a Neural Network model with NLP thanks to [NLTK](https://www.nltk.org/) and [TensorFlow](https://www.tensorflow.org/) libraries.  
+When bot is launched, the chatbot will train thanks to the patterns found in the intents.json file.  
+After training, the chatbot will be able to recognize the intents of the user's messages.  
+For every message received, the chatbot will first recognize the intent of the message and then loop through the regex of the intent to find the different entities.
+Once the entities are found, the chatbot will use the entities to find the correct response.
 
-| Regex    | Example            |
-|----------|--------------------|
-| /he+llo/ | hello<br> heeeello |
 
-If you use other services like wit.ai, please include a video from the trained texts. [Video](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+| Regex    | Example            | Match  |
+|----------|--------------------|--------| 
+| <code>/.\*cheaper([a-zA-Z\s]*)(?P<max_price>[0-9]+).\*/</code> | I want a room cheaper than 100€. | 100 |
+| <code>/.\*min\s\*price(\s\*is)?\s*(?P<min_price>[0-9]+).*/</code> | I want a room with a minimum price of 100€. | 100 |
+| <code>/.\*in\s+(?P<neighbourhood>[a-zA-Z]*).\*/</code> | I want a room in Manhattan. | Manhattan |
+| <code>/.\*(?P<room_type>home&#124;appartment&#124;hotel&#124;private&#124;shared).*/</code> | I want an appartment. | appartment |
+| <code>/.\*(?P<rating>[0-9]+)\sstar(s)?.\*/</code> | I want a room with 4 stars. | 4 |
+| <code>/.\*my name[\sis]? (?P<name>[a-zA-Z]*).\*/</code> | My name is John. | John |
+
 
 
 
@@ -125,7 +133,7 @@ Please describe all the possible scenarios in your chatbot.
 ### scenario 1:
 | User | Bot                                                     |
 |------|---------------------------------------------------------|
-| Hi   | Welcome to my chatbot😊                                |
+| Hi   | Welcome to my chatbot😊                                 |
 |      | You can use this chat bot using the following examples: |
 |      | Hi<br>How are you?<br>I want a pizza                    |
 

@@ -61,9 +61,9 @@ def save_user_profile(user_id: int, data: dict) -> None:
     for key, value in data.items():
         if value is not None:
             users_profiles[user_id][key] = value
-    if data.get('max_price') and data['min_price'] is None:
+    if (data.get('max_price') or data.get('price')) and data['min_price'] is None:
         users_profiles[user_id]['min_price'] = None
-    if data.get('min_price') and data['max_price'] is None:
+    if (data.get('min_price') or data.get('price')) and data['max_price'] is None:
         users_profiles[user_id]['max_price'] = None
     if 'price' not in data and users_profiles[user_id].get('price'):
         users_profiles[user_id]['price'] = None
@@ -80,7 +80,7 @@ def hello(user_id: int) -> dict:
 
     return {
         'title': f'Hello {name}!',
-        'description': 'How are you? 😊'
+        'description': 'How are you? 😊\n\nYou can ask me these questions if you want 😁\n' + get_messages_for_help()
     }
 
 
@@ -132,8 +132,8 @@ def room(user_id: int, min_price: int = None, max_price: int = None, price: int 
     image: str = ''
     if room['images']:
         image = room['images'].split(',')[0]
-    description = f"Price: {room['price']}€\nRating: {room['rating']}" \
-                  f"{'**We did not find any room that meets all your criteria.**' if not respects_criteria else ''}" \
+    description = f"{'**We did not find any room that meets all your criteria.**' if not respects_criteria else ''}\n" \
+                  f"Price: {room['price']}€\nRating: {room['rating']}" \
                   f"\n\nYour criteria:\n" \
                   f"Neighbourhood: {users_profiles[user_id]['neighbourhood'] if users_profiles[user_id]['neighbourhood'] else ''}\n" \
                   f"Room type: {users_profiles[user_id]['room_type'] if users_profiles[user_id]['room_type'] else ''}\n" \
