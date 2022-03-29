@@ -26,12 +26,13 @@ DISCORD_TOKEN: The token of your Discord bot.
 ## Description
 Our project idea was to create a chatbot that was able to recommend AirBnB rooms to a user. We used a recommendation system based on the user's preferences. The chatbot was able to answer questions about the rooms and the user was able to interact with the chatbot. 
 ## Bot Info
-- Chatbot platform: Facebook
+- Chatbot platform: Discord
 - [Chat with bot](https://discord.gg/ACDh263rr4) (open on new tab)
-- [Working video of this bot](https://youtu.be/j9UqlvQvxtg)
+- [Working video of this bot](https://www.youtube.com/watch?v=j9UqlvQvxtg)
 
 ### Used API
-Please Describe the used api and give [link](https://link/) 
+To complete the dataset, we had to scrape Airbnb. Unfortunately, the API was not available.  
+We then scrape directly from the website the data we needed.  
 
 ### Used Dataset
 We used the [Airbnb New York @ 4.DEC.2021](https://www.kaggle.com/datasets/sirapatsam/airbnb-new-york-4dec2021) dataset for building our recommendation system. The dataset contains information about the rooms available in New York City. Those features are the following:
@@ -104,7 +105,7 @@ Once the entities are found, the chatbot will use the entities to find the corre
 | <code>/.\*in\s+(?P<neighbourhood>[a-zA-Z]*).\*/</code> | I want a room in Manhattan. | Manhattan |
 | <code>/.\*(?P<room_type>home&#124;appartment&#124;hotel&#124;private&#124;shared).*/</code> | I want an appartment. | appartment |
 | <code>/.\*(?P<rating>[0-9]+)\sstar(s)?.\*/</code> | I want a room with 4 stars. | 4 |
-| <code>/.\*my name[\sis]? (?P<name>[a-zA-Z]*).\*/</code> | My name is John. | John |
+| <code>/.\*my name is (?P<name>[a-zA-Z]*).\*/</code> | My name is John. | John |
 
 
 

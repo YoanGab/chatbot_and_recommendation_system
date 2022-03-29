@@ -123,10 +123,10 @@
       "responses": [],
       "entities": {
         "name": [
-          ".*my name[\\sis]? (?P<name>[a-zA-Z]*).*",
-          ".*I[\\sam]? (?P<name>[a-zA-Z]*).*",
+          ".*my name is (?P<name>[a-zA-Z]*).*",
+          ".*I am (?P<name>[a-zA-Z]*).*",
           ".*I'm (?P<name>[a-zA-Z]*).*",
-          ".*call[\\sme]? (?P<name>[a-zA-Z]*).*"
+          ".*call me (?P<name>[a-zA-Z]*).*"
         ]
       }
     },
