@@ -35,6 +35,8 @@ def get_messages_for_help() -> str:
         '- Can I see me my saved rooms?',
         '- I want to see my favourite rooms.',  
         '- What are my saved rooms?',
+        '- Reset my filters.',
+        '- Clear my search.',
         '💬'
     ])
 
