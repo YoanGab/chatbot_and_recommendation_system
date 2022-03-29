@@ -27,7 +27,7 @@ DISCORD_TOKEN: The token of your Discord bot.
 Our project idea was to create a chatbot that was able to recommend AirBnB rooms to a user. We used a recommendation system based on the user's preferences. The chatbot was able to answer questions about the rooms and the user was able to interact with the chatbot. 
 ## Bot Info
 - Chatbot platform: Discord
-- [Chat with bot](https://discord.gg/ACDh263rr4) (open on new tab)
+- [Chat with bot](https://discord.gg/PzTDw93NBc) (open on new tab)
 - [Working video of this bot](https://www.youtube.com/watch?v=j9UqlvQvxtg)
 
 ### Used API
