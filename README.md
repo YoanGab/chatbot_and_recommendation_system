@@ -28,7 +28,7 @@ Our project idea was to create a chatbot that was able to recommend AirBnB rooms
 ## Bot Info
 - Chatbot platform: Facebook
 - [Chat with bot](https://discord.gg/ACDh263rr4) (open on new tab)
-- [Working video of this bot](https://www.youtube.com/watch?v=YOUTUBE_VIDEO_ID_HERE)
+- [Working video of this bot](https://youtu.be/j9UqlvQvxtg)
 
 ### Used API
 Please Describe the used api and give [link](https://link/) 
