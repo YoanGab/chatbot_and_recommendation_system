@@ -118,37 +118,40 @@ Once the entities are found, the chatbot will use the entities to find the corre
 | goodbye        |                   -                   |
 | thank you      |                   -                   |
 | help           |                   -                   |
-|----------------|---------------------------------------|
-|                | max_price, min_price, price,          |
-| room           | neighbourhood, room_type,             |
-|                | minimum_nights, rating (all optional) |
-|----------------|---------------------------------------|
+| room           | max_price, min_price, price,neighbourhood, room_type, minimum_nights, rating (all optional) |
 | name           | name (optional)                       |
 | be_nice        |                   -                   |
 | saved_rooms    |                   -                   |
-|----------------|---------------------------------------|
+| reset          |                   -                   |
 
 
 ## Scenarios
 Please describe all the possible scenarios in your chatbot.
-### scenario 1:
-| User | Bot                                                     |
-|------|---------------------------------------------------------|
-| Hi   | Welcome to my chatbot😊                                 |
-|      | You can use this chat bot using the following examples: |
-|      | Hi<br>How are you?<br>I want a pizza                    |
+### scenario 1: greeting | help | misunderstanding
+![hi.png](images/hi.png)
 
-### scenario 2:
-| User              | Bot                                                      |
-|-------------------|----------------------------------------------------------|
-| I want a pizza    | which kind of pizza do you like?<br> Margherita or Greek |
-| Margherita please | ok your order is registered. <br> have a nice day.       |
+![help.png](images/help.png)
 
+![misunderstanding.png](images/misunderstanding.png)
 
-| User                      | Bot                                                |
-|---------------------------|----------------------------------------------------|                      
-| I want a pizza margherita | ok your order is registered. <br> have a nice day. |
+### scenario 2: Search for a room
 
-please enter three examples per each scenario
+![room_search_1.png](images/room_search_1.png)
 
+![reset_filters_1.png](images/reset_filters_1.png)
 
+![search_room_2.png](images/search_room_2.png)
+
+### scenario 3: Like a room
+
+![rate_room_1.png](images/rate_room_1.png)
+
+![rate_room_2.png](images/rate_room_2.png)
+
+![saved_rooms.png](images/saved_rooms.png)
+
+![reset_filters_2.png](images/reset_filters_2.png)
+
+### scenario 4: Impossible criteria
+
+![impossible_criteria.png](images/impossible_criteria.png)

@@ -132,6 +132,7 @@ def room(user_id: int, min_price: int = None, max_price: int = None, price: int 
     image: str = ''
     if room['images']:
         image = room['images'].split(',')[0]
+
     description = f"{'**We did not find any room that meets all your criteria.**' if not respects_criteria else ''}\n" \
                   f"Price: {room['price']}€\nRating: {room['rating']}" \
                   f"\n\nYour criteria:\n" \
@@ -171,6 +172,20 @@ def saved_rooms(user_id: int) -> dict:
     }
 
 
+def reset_filters(user_id: int) -> dict:
+    """ Reset filters
+    :param user_id: int
+    :return: dict
+    """
+    if user_id in users_profiles:
+        del users_profiles[user_id]
+
+    return {
+        'title': 'Filters reset!',
+        'description': 'You can ask me to recommend a room for you.'
+    }
+
+
 chatbot: Chatbot = Chatbot(
     default_response=default_response(),
     intent_methods={
@@ -178,7 +193,8 @@ chatbot: Chatbot = Chatbot(
         'room': room,
         'name': get_name,
         'help': default_response,
-        'saved_rooms': saved_rooms
+        'saved_rooms': saved_rooms,
+        'reset': reset_filters
     }
 )
 chatbot.train_model()
@@ -262,7 +278,15 @@ async def save_rating(user_id: int, message_id: int, channel_id: int, rating_emo
     room_id: int = await get_room_from_message(message_id=message_id, channel_id=channel_id)
     if room_id:
         if user_id not in users_profiles:
-            users_profiles[user_id] = {}
+            users_profiles[user_id] = {
+                'neighbourhood': None,
+                'room_type': None,
+                'minimum_nights': None,
+                'min_price': None,
+                'max_price': None,
+                'price': None,
+                'rating': None
+            }
         if 'ratings' not in users_profiles[user_id]:
             users_profiles[user_id]['ratings'] = {}
         users_profiles[user_id]['ratings'][room_id] = rating
