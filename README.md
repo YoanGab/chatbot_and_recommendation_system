@@ -32,7 +32,7 @@ Our project idea was to create a chatbot that was able to recommend AirBnB rooms
 
 ### Used API
 To complete the dataset, we had to scrape Airbnb. Unfortunately, the API was not available.  
-We then scrape directly from the website the data we needed.  
+We then scrape directly from the website the data we needed (ex: ratings and images).  
 
 ### Used Dataset
 We used the [Airbnb New York @ 4.DEC.2021](https://www.kaggle.com/datasets/sirapatsam/airbnb-new-york-4dec2021) dataset for building our recommendation system. The dataset contains information about the rooms available in New York City. Those features are the following:
@@ -126,15 +126,15 @@ Once the entities are found, the chatbot will use the entities to find the corre
 
 
 ## Scenarios
-Please describe all the possible scenarios in your chatbot.
-### scenario 1: greeting | help | misunderstanding
+Here are all the possible scenarios in our chatbot.
+### Scenario 1: greeting | help | misunderstanding
 ![hi.png](images/hi.png)
 
 ![help.png](images/help.png)
 
 ![misunderstanding.png](images/misunderstanding.png)
 
-### scenario 2: Search for a room
+### Scenario 2: Search for a room
 
 ![room_search_1.png](images/room_search_1.png)
 
@@ -142,7 +142,7 @@ Please describe all the possible scenarios in your chatbot.
 
 ![search_room_2.png](images/search_room_2.png)
 
-### scenario 3: Like a room
+### Scenario 3: Like a room
 
 ![rate_room_1.png](images/rate_room_1.png)
 
@@ -152,6 +152,6 @@ Please describe all the possible scenarios in your chatbot.
 
 ![reset_filters_2.png](images/reset_filters_2.png)
 
-### scenario 4: Impossible criteria
+### Scenario 4: Impossible criteria
 
 ![impossible_criteria.png](images/impossible_criteria.png)
